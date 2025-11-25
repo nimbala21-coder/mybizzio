@@ -117,6 +117,13 @@ const VoiceHome: React.FC<VoiceHomeProps> = ({ onInputCaptured, setView }) => {
               // Fallback flow - sends isAudio: true
               onInputCaptured(base64String, true, finalMimeType);
            }
+           // CRITICAL FIX: Always reset processing state, even if result is null
+           setIsProcessing(false);
+        };
+        reader.onerror = () => {
+          console.error("FileReader error");
+          setIsProcessing(false);
+          alert("Audio processing failed. Please try typing instead.");
         };
         cleanup();
       };
