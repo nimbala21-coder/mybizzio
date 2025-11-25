@@ -144,12 +144,22 @@ const VoiceHome: React.FC<VoiceHomeProps> = ({ onInputCaptured, setView }) => {
     if (isRecording || isProcessing) return;
     setIsProcessing(true);
 
-    // TRY SPEECH API FIRST (Best for Demo Stability)
-    // This turns voice into Text immediately on the client.
-    const speechStarted = startSpeechRecognition();
-    if (!speechStarted) {
-      // Fallback to raw audio recording if browser doesn't support Speech API
+    // MOBILE FIX: Detect mobile devices and skip Speech Recognition
+    // Speech Recognition is unreliable on mobile Safari/Chrome
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Use MediaRecorder directly on mobile for reliability
+      console.log("Mobile detected, using MediaRecorder");
       startMediaRecorder();
+    } else {
+      // TRY SPEECH API FIRST on Desktop (Best for Demo Stability)
+      // This turns voice into Text immediately on the client.
+      const speechStarted = startSpeechRecognition();
+      if (!speechStarted) {
+        // Fallback to raw audio recording if browser doesn't support Speech API
+        startMediaRecorder();
+      }
     }
   };
 
@@ -158,10 +168,14 @@ const VoiceHome: React.FC<VoiceHomeProps> = ({ onInputCaptured, setView }) => {
     setIsRecording(false);
     
     if (usingSpeechApi && recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch(e) {}
+      try { recognitionRef.current.stop(); } catch(e) {
+        setIsProcessing(false); // Safety: reset if speech API fails
+      }
     } else if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop();
     } else {
+      // Safety: if nothing to stop, reset processing
+      setIsProcessing(false);
       cleanup();
     }
   };
