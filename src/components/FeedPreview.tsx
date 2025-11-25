@@ -5,12 +5,11 @@ import { IconArrowLeft, IconCheck, IconInstagram, IconFacebook, IconTikTok, Icon
 
 interface FeedPreviewProps {
   data: FeedPreviewData;
-  businessName: string; // Dynamic Name
   onBack: () => void;
   onPublish: () => void;
 }
 
-const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, onPublish }) => {
+const FeedPreview: React.FC<FeedPreviewProps> = ({ data, onBack, onPublish }) => {
   const [isPublishing, setIsPublishing] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [scheduleDate, setScheduleDate] = useState('');
@@ -62,12 +61,20 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
      );
   };
 
+  // --- RENDER HELPERS ---
+
+  // Reusable component to render the user's design (Image + Layers)
   const LayeredCanvas = ({ styleClass = "" }: { styleClass?: string }) => (
       <div className={`relative w-full overflow-hidden ${data.design.aspectRatio} ${styleClass}`}>
+         {/* Layer 1: Image + Filter */}
          <div className={`w-full h-full ${data.design.filter}`}>
             <img src={data.image} className="w-full h-full object-cover" alt="Post content" />
          </div>
+
+         {/* Layer 2: Frames */}
          {renderActiveFrame()}
+         
+         {/* Layer 3: Text */}
          {data.design.overlayText && (
              <div 
                 style={{ 
@@ -92,6 +99,7 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
   // --- INSTAGRAM LAYOUT ---
   const InstagramLayout = () => (
     <div className="bg-white min-h-full">
+       {/* Mock Stories Bar */}
        <div className="flex gap-4 p-4 border-b border-slate-50 overflow-x-hidden no-scrollbar">
           {['Your Story', 'alex_design', 'studio_hq', 'nails_art'].map((u, i) => (
              <div key={u} className="flex flex-col items-center gap-1 flex-shrink-0">
@@ -103,14 +111,13 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
           ))}
        </div>
 
+       {/* The Post */}
        <div className="pb-8">
           <div className="flex items-center justify-between p-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-[10px] font-bold text-brand-purple">
-                {businessName.charAt(0).toUpperCase()}
-              </div>
+              <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-[10px] font-bold text-brand-purple">J</div>
               <div>
-                <p className="text-xs font-bold text-slate-900">{businessName}</p>
+                <p className="text-xs font-bold text-slate-900">Jessica's Salon</p>
                 <p className="text-[10px] text-slate-500">Original Audio</p>
               </div>
             </div>
@@ -122,14 +129,14 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
           <div className="p-3">
              <div className="flex justify-between mb-3">
                 <div className="flex gap-4">
-                  <div className="w-6 h-6 rounded-full border-2 border-slate-900"></div>
-                  <div className="w-6 h-6 rounded-full border-2 border-slate-900"></div>
-                  <div className="w-6 h-6 rounded-full border-2 border-slate-900"></div>
+                  <div className="w-6 h-6 rounded-full border-2 border-slate-900"></div> {/* Heart */}
+                  <div className="w-6 h-6 rounded-full border-2 border-slate-900"></div> {/* Comment */}
+                  <div className="w-6 h-6 rounded-full border-2 border-slate-900"></div> {/* Share */}
                 </div>
-                <div className="w-6 h-6 rounded-full border-2 border-slate-900"></div>
+                <div className="w-6 h-6 rounded-full border-2 border-slate-900"></div> {/* Save */}
              </div>
              <p className="text-sm text-slate-900">
-               <span className="font-bold mr-2">{businessName}</span>
+               <span className="font-bold mr-2">Jessica's Salon</span>
                {data.caption}
              </p>
              <p className="text-[10px] text-slate-400 mt-1 uppercase">2 minutes ago</p>
@@ -142,13 +149,12 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
   const FacebookLayout = () => (
     <div className="bg-slate-100 min-h-full pt-2">
        <div className="bg-white p-4 shadow-sm mb-4">
+          {/* FB Header */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                {businessName.charAt(0).toUpperCase()}
-              </div>
+              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">J</div>
               <div>
-                <p className="text-sm font-bold text-slate-900">{businessName}</p>
+                <p className="text-sm font-bold text-slate-900">Jessica's Salon</p>
                 <div className="flex items-center gap-1 text-[10px] text-slate-500">
                    <span>Just now</span> • <span>🌍</span>
                 </div>
@@ -157,12 +163,15 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
             <div className="text-slate-500 font-bold mb-4">...</div>
           </div>
 
+          {/* FB Caption (Top) */}
           <p className="text-sm text-slate-800 mb-3 whitespace-pre-wrap">{data.caption}</p>
 
+          {/* FB Image */}
           <div className="-mx-4">
              <LayeredCanvas />
           </div>
 
+          {/* FB Actions */}
           <div className="flex items-center justify-between px-4 py-3 mt-2 border-t border-slate-100 text-slate-500 text-xs font-bold">
              <div className="flex items-center gap-1"><span>👍</span> Like</div>
              <div className="flex items-center gap-1"><span>💬</span> Comment</div>
@@ -175,12 +184,15 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
   // --- TIKTOK LAYOUT ---
   const TikTokLayout = () => (
     <div className="bg-black h-full relative flex items-center justify-center overflow-hidden">
+       {/* Full Screen Content */}
        <div className="absolute inset-0 opacity-50 bg-slate-900"></div>
        <div className="w-full h-full relative max-w-md mx-auto">
+           {/* If aspect ratio is square, we center it. If vertical, it fills. */}
            <div className="absolute inset-0 flex items-center justify-center bg-black">
              <LayeredCanvas styleClass={data.design.aspectRatio === 'aspect-[9/16]' ? 'h-full object-cover' : ''} />
            </div>
 
+           {/* TikTok Overlay UI */}
            <div className="absolute right-2 bottom-20 flex flex-col items-center gap-6 z-30">
               <div className="w-10 h-10 rounded-full bg-white p-0.5 shadow-lg"><div className="w-full h-full bg-purple-600 rounded-full"></div></div>
               <div className="flex flex-col items-center gap-1 text-shadow-sm">
@@ -194,8 +206,9 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
               <div className="w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl">↗</div>
            </div>
 
+           {/* TikTok Caption Overlay */}
            <div className="absolute bottom-0 left-0 right-12 p-4 pb-8 z-30 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-              <h4 className="text-white font-bold text-sm mb-1 text-shadow-sm">@{businessName.replace(/\s+/g, '_').toLowerCase()}</h4>
+              <h4 className="text-white font-bold text-sm mb-1 text-shadow-sm">@jessicas_salon</h4>
               <p className="text-white/90 text-xs line-clamp-2 mb-2 text-shadow-sm">{data.caption}</p>
               <div className="flex items-center gap-2 text-white/70 text-[10px]">
                  <span className="animate-spin-slow">🎵</span> Original Sound - Trending
@@ -206,7 +219,7 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
   );
 
   return (
-    <div className="flex flex-col h-full bg-slate-50 relative overflow-hidden">
+    <div className="flex flex-col h-full bg-slate-50 relative">
       {/* Publishing Overlay */}
       {isPublishing && (
         <div className="absolute inset-0 z-50 bg-brand-purple/95 flex flex-col items-center justify-center text-white animate-fade-in backdrop-blur-sm">
@@ -217,15 +230,6 @@ const FeedPreview: React.FC<FeedPreviewProps> = ({ data, businessName, onBack, o
           {publishType === 'Later' && (
              <p className="text-purple-200 text-sm mt-2">{scheduleDate} at {scheduleTime}</p>
           )}
-          
-          {/* Confetti Explosion */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-             <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-confetti-slow"></div>
-             <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-pink-500 rounded-full animate-confetti-medium"></div>
-             <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-blue-400 rounded-full animate-confetti-fast"></div>
-             <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-brand-orange rounded-full animate-confetti-medium" style={{ animationDelay: '200ms' }}></div>
-             <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-white rounded-full animate-confetti-fast" style={{ animationDelay: '500ms' }}></div>
-          </div>
         </div>
       )}
 

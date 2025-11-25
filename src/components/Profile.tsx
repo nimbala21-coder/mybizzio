@@ -1,15 +1,12 @@
-
 import React from 'react';
 import { IconUser, IconLink, IconCreditCard, IconArrowLeft, IconInstagram, IconFacebook, IconTikTok } from './Icons';
 import { ViewState } from '../types';
 
 interface ProfileProps {
-  businessName: string;
-  setBusinessName: (name: string) => void;
   onBack: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ businessName, setBusinessName, onBack }) => {
+const Profile: React.FC<ProfileProps> = ({ onBack }) => {
   const ConnectedAccountRow = ({ icon: Icon, name, connected }: { icon: any, name: string, connected: boolean }) => (
     <div className="flex items-center justify-between py-4 border-b border-slate-100 last:border-0">
       <div className="flex items-center gap-3">
@@ -37,18 +34,13 @@ const Profile: React.FC<ProfileProps> = ({ businessName, setBusinessName, onBack
       <div className="p-6 space-y-8">
         {/* Profile Section */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg flex-shrink-0">
-            {businessName.charAt(0).toUpperCase()}
+          <div className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+            J
           </div>
-          <div className="flex-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Business Name</label>
-            <input 
-              type="text" 
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              className="w-full text-xl font-bold text-slate-900 border-b border-slate-200 focus:border-brand-purple focus:outline-none py-1 bg-transparent"
-            />
-            <p className="text-slate-500 text-sm mt-1">admin@bizzio.ai</p>
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">Jessica's Salon</h2>
+            <p className="text-slate-500 text-sm">jessica@glamnails.com</p>
+            <button className="text-brand-purple text-xs font-bold mt-2">Edit Profile</button>
           </div>
         </div>
 

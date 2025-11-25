@@ -10,9 +10,9 @@ import Mixer from './components/Mixer';
 import Profile from './components/Profile';
 import GuidedCreation from './components/GuidedCreation';
 import FeedPreview from './components/FeedPreview';
-import { ViewState, MixerData, FeedPreviewData, DesignState } from './types';
+import { ViewState, MixerData, FeedPreviewData, DesignState } from './src/types';
 import { IconCheck } from './components/Icons';
-import { generatePostIngredients, generateCaptionsFromImage } from './services/geminiService';
+import { generatePostIngredients, generateCaptionsFromImage } from './src/services/geminiService';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>(ViewState.HOME);
