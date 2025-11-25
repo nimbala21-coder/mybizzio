@@ -106,6 +106,9 @@ const VoiceHome: React.FC<VoiceHomeProps> = ({ onInputCaptured, setView }) => {
       };
 
       recorder.onstop = async () => {
+        // CRITICAL FIX: Reset processing immediately when recording stops
+        setIsProcessing(false);
+        
         // Capture the actual mimeType the browser used
         const finalMimeType = recorder.mimeType || 'audio/webm';
         const blob = new Blob(chunksRef.current, { type: finalMimeType });
@@ -116,13 +119,12 @@ const VoiceHome: React.FC<VoiceHomeProps> = ({ onInputCaptured, setView }) => {
               const base64String = (reader.result as string).split(',')[1];
               // Fallback flow - sends isAudio: true
               onInputCaptured(base64String, true, finalMimeType);
+           } else {
+              alert("Audio capture failed. Please try typing instead.");
            }
-           // CRITICAL FIX: Always reset processing state, even if result is null
-           setIsProcessing(false);
         };
         reader.onerror = () => {
           console.error("FileReader error");
-          setIsProcessing(false);
           alert("Audio processing failed. Please try typing instead.");
         };
         cleanup();
